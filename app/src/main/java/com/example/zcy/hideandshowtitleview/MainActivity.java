@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private View titleView;
     private ListView listView;
+    private LinearLayout contentView;
 
     /**
      * ListView滑动动画标记项
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listView = (ListView) findViewById(R.id.list_view);
         titleView = findViewById(R.id.title_view);
+        contentView = (LinearLayout) findViewById(R.id.content_view);
 
         listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, getData()));
 
@@ -87,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void hideTitleView() {
         final int height = titleView.getHeight();
+        final int listViewHeight = listView.getHeight();
         ObjectAnimator animator = ObjectAnimator.ofFloat(titleView, "titleViewHide", 0f, 1f);
         animator.setDuration(300);
         animator.start();
@@ -95,9 +99,10 @@ public class MainActivity extends AppCompatActivity {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float cVal = (Float) animation.getAnimatedValue();
                 titleView.setTranslationY(-height * cVal);
-                contentView.setTranslationY(height - height * cVal);
+                listView.setTranslationY(-height * cVal);
                 ViewGroup.LayoutParams params = listView.getLayoutParams();
-                contentView.setLayoutParams(params);
+                params.height = (int) (listViewHeight + height * cVal);
+                listView.setLayoutParams(params);
                 if (cVal == 1) {
                     titleViewIsShow = false;
                     titleViewIsScrolling = false;
@@ -105,9 +110,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void showTitleView() {
 
         final int height = titleView.getHeight();
+        final int listViewHeight = listView.getHeight();
         ObjectAnimator animator = ObjectAnimator.ofFloat(titleView, "titleViewShow", 0f, 1f);
         animator.setDuration(300);
         animator.start();
@@ -115,9 +122,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float cVal = (Float) animation.getAnimatedValue();
-                contentView.setTranslationY(height * cVal);
+                listView.setTranslationY(-height * (1 - cVal));
                 ViewGroup.LayoutParams params = listView.getLayoutParams();
-                contentView.setLayoutParams(params);
+                params.height= (int) (listViewHeight - height*cVal);
+                listView.setLayoutParams(params);
                 titleView.setTranslationY(-height * (1 - cVal));
                 if (cVal == 1) {
                     titleViewIsShow = true;
