@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
     private View titleView;
     private ListView listView;
-    private LinearLayout contentView;
 
     /**
      * ListView滑动动画标记项
@@ -39,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listView = (ListView) findViewById(R.id.list_view);
         titleView = findViewById(R.id.title_view);
-        contentView = (LinearLayout) findViewById(R.id.content_view);
 
         listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, getData()));
 
@@ -63,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (scrollFlag) {
-                    if (firstVisibleItem > lastVisibleItemPosition) {
+                    if (firstVisibleItem > lastVisibleItemPosition && firstVisibleItem > 1) {
                         if (!titleViewIsScrolling) {
                             if (titleViewIsShow) {
                                 titleViewIsScrolling = true;
@@ -124,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 float cVal = (Float) animation.getAnimatedValue();
                 listView.setTranslationY(-height * (1 - cVal));
                 ViewGroup.LayoutParams params = listView.getLayoutParams();
-                params.height= (int) (listViewHeight - height*cVal);
+                params.height = (int) (listViewHeight - height * cVal);
                 listView.setLayoutParams(params);
                 titleView.setTranslationY(-height * (1 - cVal));
                 if (cVal == 1) {
